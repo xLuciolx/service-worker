@@ -1,14 +1,18 @@
 document.addEventListener('DOMContentLoaded', function(event) {
     if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').then(function(reg) {
+    navigator.serviceWorker.register('./sw.js', {scope: './'}).then(function(reg) {
         if ('sync' in reg) {
             var form = document.getElementById('sw');
             form.addEventListener('submit', function(e){
                 e.preventDefault();
-                var input = form.elements[0].value;                
-                var content = {
-                    body: input
-                }
+                var input = form.elements[0].value;  
+                content = {
+                    body:{
+                        "_postinsert_test" : {
+                            "string" : input
+                            }
+                        }
+                    }            
                 store.outbox('readwrite').then(function(outbox){
                     return outbox.put(content)
                 
@@ -25,3 +29,9 @@ document.addEventListener('DOMContentLoaded', function(event) {
     });
     }
 });
+
+window.addEventListener('online', function () {
+    console.log('online');
+    
+    
+})
